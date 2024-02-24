@@ -1,0 +1,10 @@
+kafka:
+  stream:
+    topic-in: streaming-topic-in
+    topic-out: streaming-topic-out
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    streams:
+      bootstrap-servers: localhost:9092
+      application-id: kafka-stream
