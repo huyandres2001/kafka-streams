@@ -12,9 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration;
-import org.springframework.kafka.config.StreamsBuilderFactoryBean;
-import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 
@@ -23,12 +20,15 @@ import java.util.concurrent.*;
 
 @SpringBootTest(
         classes = {
-                KafkaAutoConfiguration.class, KafkaTemplateConfig.class, KafkaStreamsDefaultConfiguration.class, KStreamConfig.class,
+                KafkaAutoConfiguration.class,
+                KStreamConfig.class,
+                KafkaTopicConfig.class,
+                KafkaTemplateConfig.class,
                 KStreamConfigIntegrationTest.KafkaListenerConfig.class
         }
 )
-@DirtiesContext
 @Slf4j
+@DirtiesContext
 class KStreamConfigIntegrationTest {
 
     @Value("${kafka.stream.topic-in}")
@@ -45,12 +45,6 @@ class KStreamConfigIntegrationTest {
 
     @Autowired
     KafkaTemplate<String, String> kafkaTemplate;
-
-    @Autowired
-    ConsumerFactory<String, String> consumerFactory;
-
-    @Autowired
-    StreamsBuilderFactoryBean streamsBuilderFactoryBean;
 
     @Autowired
     private CompletableFuture<ConsumerRecord<?, String>> resultFuture;

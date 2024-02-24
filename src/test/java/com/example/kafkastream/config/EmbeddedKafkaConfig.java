@@ -35,7 +35,7 @@ public class EmbeddedKafkaConfig {
     public Map<String, Object> producerConfigs() {
         Map<String, Object> producerConfigs = KafkaTestUtils.producerProps(this.brokerAddresses);
         producerConfigs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        producerConfigs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        producerConfigs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class); //must set key-value serializer
         return producerConfigs;
     }
 
@@ -51,9 +51,9 @@ public class EmbeddedKafkaConfig {
         Map<String, Object> consumerConfigs = KafkaTestUtils.consumerProps(
                 this.brokerAddresses, "kafka-streams",
                 "false"
-        );
+        ); //must set broker addresses in order to use embedded broker
         consumerConfigs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        consumerConfigs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        consumerConfigs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class); //must set k-v deser
         return consumerConfigs;
     }
 

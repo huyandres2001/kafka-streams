@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -22,7 +23,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.EmbeddedKafkaKraftBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -35,14 +35,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
                 "delete.topic.enable=${topic.delete:true}"
         }
 )
-@SpringJUnitConfig(
+@SpringBootTest(//when define static configuration nested inside the test class, we should import these configuration class below to wire the bean.
         classes = {
                 KafkaAutoConfiguration.class, KafkaStreamsDefaultConfiguration.class, KStreamConfig.class,
                 KStreamConfigIntegrationTest.KafkaListenerConfig.class
         }
 )
 @Slf4j
-@TestPropertySource(locations = "classpath:application.properties")
+@TestPropertySource(locations = "classpath:application-kafka-streams.properties")//must use .properties file, application.yml will not work
 class KStreamConfigEmbeddedBrokerTest {
 
     @Value("${kafka.stream.topic-in}")
