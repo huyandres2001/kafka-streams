@@ -1,11 +1,13 @@
-package com.example.kafkastream;
+package com.example.kafkastream.unittest;
 
+import com.example.kafkastream.KStreamConfig;
 import com.example.kafkastream.config.EmbeddedKafkaConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
@@ -22,6 +24,7 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.test.EmbeddedKafkaKraftBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 
 import java.util.concurrent.CompletableFuture;
@@ -38,10 +41,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(//when define static configuration nested inside the test class, we should import these configuration class below to wire the bean.
         classes = {
                 KafkaAutoConfiguration.class, KafkaStreamsDefaultConfiguration.class, KStreamConfig.class,
-                KStreamConfigIntegrationTest.KafkaListenerConfig.class
+                KStreamConfigEmbeddedBrokerTest.KafkaListenerConfig.class
         }
 )
 @Slf4j
+@DirtiesContext
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestPropertySource(locations = "classpath:application-kafka-streams.properties")//must use .properties file, application.yml will not work
 class KStreamConfigEmbeddedBrokerTest {
 

@@ -22,13 +22,6 @@ import java.util.Map;
 @Slf4j
 public class KStreamConfig {
 
-    @Value("${kafka.stream.topic-in}")
-    String streamingTopicIn;
-
-    @Value("${kafka.stream.topic-out}")
-    String streamingTopicOut;
-
-
     @Bean(name = KafkaStreamsDefaultConfiguration.DEFAULT_STREAMS_CONFIG_BEAN_NAME)
     public KafkaStreamsConfiguration kafkaStreamsConfig(@Value("${spring.kafka.streams.bootstrap-servers}") String kafkaStreamBootstrapServers,
                                                         @Value("${spring.kafka.streams.application-id}") String kStreamApplicationId) {
@@ -43,11 +36,13 @@ public class KStreamConfig {
     }
 
     @Bean
-    public KStream<String, String> kStream(StreamsBuilder streamsBuilder) {
+    public KStream<String, String> kStream(StreamsBuilder streamsBuilder, @Value("${kafka.stream.topic-in}")
+    String streamingTopicIn, @Value("${kafka.stream.topic-out}")
+    String streamingTopicOut) {
         KStream<String, String> kStream = streamsBuilder.stream(streamingTopicIn);
         kStream.mapValues((readOnlyKey, value) -> value.concat(" out")).to(streamingTopicOut);
         Topology topology = streamsBuilder.build();
-        log.info("Kstream topology: {}", topology.describe());
+        log.info("Kstream topology describe: {}", topology.describe());
         return kStream;
     }
 }

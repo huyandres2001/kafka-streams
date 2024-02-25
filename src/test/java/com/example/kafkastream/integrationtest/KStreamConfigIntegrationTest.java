@@ -1,9 +1,13 @@
-package com.example.kafkastream;
+package com.example.kafkastream.integrationtest;
 
+import com.example.kafkastream.KStreamConfig;
+import com.example.kafkastream.KafkaTemplateConfig;
+import com.example.kafkastream.KafkaTopicConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +17,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.Objects;
 import java.util.concurrent.*;
@@ -28,7 +31,6 @@ import java.util.concurrent.*;
         }
 )
 @Slf4j
-@DirtiesContext
 class KStreamConfigIntegrationTest {
 
     @Value("${kafka.stream.topic-in}")
@@ -75,6 +77,11 @@ class KStreamConfigIntegrationTest {
             resultFuture().complete(payload);
             output.add(payload);
         }
+    }
+
+    @AfterAll
+    static void shutdown() {
+
     }
 
 }
