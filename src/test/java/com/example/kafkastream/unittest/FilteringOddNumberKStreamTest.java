@@ -1,6 +1,6 @@
 package com.example.kafkastream.unittest;
 
-import com.example.kafkastream.FilteringKStreamConfig;
+import com.example.kafkastream.FilteringOddNumberKStreamConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.*;
 import org.assertj.core.api.Assertions;
@@ -11,15 +11,15 @@ import java.util.List;
 import java.util.Properties;
 
 
-class FilteringKStreamConfigTest extends AbstractKStreamTest {
+class FilteringOddNumberKStreamTest extends AbstractKStreamTopologyTestDriverTest {
 
-    FilteringKStreamConfig filteringKStreamConfig;
+    FilteringOddNumberKStreamConfig filteringOddNumberKStream;
 
     Properties defaultProperties;
 
     @BeforeEach
     void setup() {
-        filteringKStreamConfig = new FilteringKStreamConfig();
+        filteringOddNumberKStream = new FilteringOddNumberKStreamConfig();
         defaultProperties = new Properties();
         defaultProperties.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         defaultProperties.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.Integer().getClass().getName());
@@ -29,7 +29,7 @@ class FilteringKStreamConfigTest extends AbstractKStreamTest {
     @Test
     void testFilteringKStream() {
         StreamsBuilder streamsBuilder = new StreamsBuilder();
-        filteringKStreamConfig.filteringKStream(streamsBuilder, STREAMING_TOPIC_IN, STREAMING_TOPIC_OUT);
+        filteringOddNumberKStream.filteringOddNumberKStream(streamsBuilder, STREAMING_TOPIC_IN, STREAMING_TOPIC_OUT);
         Topology topology = streamsBuilder.build();
         defaultProperties.setProperty(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.Integer().getClass().getName());
         try (TopologyTestDriver testDriver = new TopologyTestDriver(topology, defaultProperties)) {
@@ -42,5 +42,4 @@ class FilteringKStreamConfigTest extends AbstractKStreamTest {
             Assertions.assertThat(keyValues.stream().map(stringIntegerKeyValue -> stringIntegerKeyValue.value).toList()).containsExactly(1, 3, 5, 7, 9);
         }
     }
-
 }

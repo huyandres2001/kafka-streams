@@ -9,10 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
-import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-import org.springframework.kafka.config.KafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
-import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 
@@ -27,7 +24,7 @@ public class EmbeddedKafkaConfig {
     private String brokerAddresses;
 
     @Bean
-    public ProducerFactory<Integer, String> producerFactory() {
+    public ProducerFactory<?, ?> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
@@ -40,9 +37,9 @@ public class EmbeddedKafkaConfig {
     }
 
     @Bean
-    public KafkaTemplate<Integer, String> template() {
-        KafkaTemplate<Integer, String> template = new KafkaTemplate<>(producerFactory(), true);
-        template.setConsumerFactory(consumerFactory());
+    public KafkaTemplate<?, ?> template(ConsumerFactory<Object, Object> consumerFactory, ProducerFactory<Object, Object> producerFactory) {
+        KafkaTemplate<Object, Object> template = new KafkaTemplate<>(producerFactory, true);
+        template.setConsumerFactory(consumerFactory);
         return template;
     }
 
@@ -58,17 +55,9 @@ public class EmbeddedKafkaConfig {
     }
 
     @Bean
-    public ConsumerFactory<Integer, String> consumerFactory() {
+    public ConsumerFactory<?, ?> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfigs());
     }
 
-    @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<Integer, String>>
-    kafkaListenerContainerFactory() {
 
-        ConcurrentKafkaListenerContainerFactory<Integer, String> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
-        return factory;
-    }
 }

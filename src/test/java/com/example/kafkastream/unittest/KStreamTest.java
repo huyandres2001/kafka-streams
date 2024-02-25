@@ -14,7 +14,7 @@ import java.util.Properties;
 /**
  * KstreamTest with TopologyTestDriver
  */
-class KStreamTopologyTestDriverTest extends AbstractKStreamTest {
+class KStreamTest extends AbstractKStreamTopologyTestDriverTest {
 
 
     KStreamConfig kStreamConfig;

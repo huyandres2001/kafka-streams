@@ -22,9 +22,9 @@ import java.util.Objects;
 
 @Configuration
 @Slf4j
-public class FilteringKStreamConfig {
+public class FilteringOddNumberKStreamConfig {
 
-    @Bean(name = "filteringKStreamsConfig")
+    @Bean(name = "filteringOddNumberKStreamsConfig")
     public KafkaStreamsConfiguration kafkaStreamsConfig(
             @Value("${spring.kafka.streams.bootstrap-servers}") String kafkaStreamBootstrapServers,
             @Value("${spring.kafka.streams.application-id}") String kStreamApplicationId
@@ -39,9 +39,9 @@ public class FilteringKStreamConfig {
         return new KafkaStreamsConfiguration(props);
     }
 
-    @Bean("filteringKStreamStreamBuilder")
-    public StreamsBuilderFactoryBean filteringKStreamStreamBuilder(
-            @Qualifier("filteringKStreamsConfig")
+    @Bean("filteringOddNumberKStreamStreamBuilder")
+    public StreamsBuilderFactoryBean filteringOddNumberKStreamStreamBuilder(
+            @Qualifier("filteringOddNumberKStreamsConfig")
             ObjectProvider<KafkaStreamsConfiguration> streamsConfigProvider, ObjectProvider<StreamsBuilderFactoryBeanConfigurer> configurerProvider
     ) {
         KafkaStreamsConfiguration streamsConfig = streamsConfigProvider.getIfAvailable();
@@ -50,9 +50,9 @@ public class FilteringKStreamConfig {
         return fb;
     }
 
-    @Bean("filteringKStream")
-    public KStream<String, Integer> filteringKStream(
-            @Qualifier("filteringKStreamStreamBuilder") StreamsBuilder streamsBuilder,
+    @Bean("filteringOddNumberKStream")
+    public KStream<String, Integer> filteringOddNumberKStream(
+            @Qualifier("filteringOddNumberKStreamStreamBuilder") StreamsBuilder streamsBuilder,
             @Value("${kafka.stream.filtering-topic-in}") String filteringStreamingTopicIn,
             @Value("${kafka.stream.filtering-topic-out}") String filteringStreamingTopicOut
     ) {

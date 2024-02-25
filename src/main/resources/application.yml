@@ -4,6 +4,9 @@ kafka:
     topic-out: streaming-topic-out
     filtering-topic-in: filtering-topic-in
     filtering-topic-out: filtering-topic-out
+    branching-topic-in: branching-topic-in
+    branching-even-topic: branching-even-topic
+    branching-odd-topic: branching-odd-topic
 spring:
   kafka:
     bootstrap-servers: localhost:9092

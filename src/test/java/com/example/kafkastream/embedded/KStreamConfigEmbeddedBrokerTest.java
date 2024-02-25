@@ -1,4 +1,4 @@
-package com.example.kafkastream.unittest;
+package com.example.kafkastream.embedded;
 
 import com.example.kafkastream.KStreamConfig;
 import com.example.kafkastream.config.EmbeddedKafkaConfig;
@@ -9,6 +9,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -66,6 +67,7 @@ class KStreamConfigEmbeddedBrokerTest {
     KafkaTemplate<String, String> kafkaTemplate;
 
     @Autowired
+    @Qualifier("defaultKafkaStreamsBuilder")
     StreamsBuilderFactoryBean streamsBuilderFactoryBean;
 
     @Autowired
@@ -98,6 +100,7 @@ class KStreamConfigEmbeddedBrokerTest {
     @EnableKafkaStreams
     @Import(EmbeddedKafkaConfig.class)
     public static class KafkaListenerConfig {
+
         @Bean
         public CompletableFuture<ConsumerRecord<?, String>> resultFuture() {
             return new CompletableFuture<>();
@@ -107,6 +110,7 @@ class KStreamConfigEmbeddedBrokerTest {
         public void streamingTopicOut(ConsumerRecord<String, String> payload) {
             resultFuture().complete(payload);
         }
+
     }
 
 }
