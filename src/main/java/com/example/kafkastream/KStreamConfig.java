@@ -7,24 +7,25 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.processor.WallclockTimestampExtractor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration;
 import org.springframework.kafka.config.KafkaStreamsConfiguration;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@EnableKafkaStreams
 @Configuration
 @Slf4j
 public class KStreamConfig {
 
     @Bean(name = KafkaStreamsDefaultConfiguration.DEFAULT_STREAMS_CONFIG_BEAN_NAME)
-    public KafkaStreamsConfiguration kafkaStreamsConfig(@Value("${spring.kafka.streams.bootstrap-servers}") String kafkaStreamBootstrapServers,
-                                                        @Value("${spring.kafka.streams.application-id}") String kStreamApplicationId) {
+    public KafkaStreamsConfiguration kafkaStreamsConfig(
+            @Value("${spring.kafka.streams.bootstrap-servers}") String kafkaStreamBootstrapServers,
+            @Value("${spring.kafka.streams.application-id}") String kStreamApplicationId
+    ) {
         Map<String, Object> props = new HashMap<>();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, kStreamApplicationId);
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaStreamBootstrapServers);
@@ -36,13 +37,15 @@ public class KStreamConfig {
     }
 
     @Bean
-    public KStream<String, String> kStream(StreamsBuilder streamsBuilder, @Value("${kafka.stream.topic-in}")
-    String streamingTopicIn, @Value("${kafka.stream.topic-out}")
-    String streamingTopicOut) {
+    public KStream<String, String> kStream(
+            @Qualifier("defaultKafkaStreamsBuilder") StreamsBuilder streamsBuilder, @Value("${kafka.stream.topic-in}") String streamingTopicIn,
+            @Value("${kafka.stream.topic-out}") String streamingTopicOut
+    ) {
         KStream<String, String> kStream = streamsBuilder.stream(streamingTopicIn);
         kStream.mapValues((readOnlyKey, value) -> value.concat(" out")).to(streamingTopicOut);
         Topology topology = streamsBuilder.build();
         log.info("Kstream topology describe: {}", topology.describe());
         return kStream;
     }
+
 }
